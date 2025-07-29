@@ -8,21 +8,30 @@ on:
 jobs:
   run-discount-script:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - name: Download yesterday discounts
+        uses: actions/download-artifact@v3
+        with:
+          name: yesterday-discounts
+          path: .
+        continue-on-error: true
+
+      - uses: actions/setup-python@v4
         with:
           python-version: 3.x
 
-      - name: Install dependencies
-        run: pip install -r requirements.txt
+      - run: pip install -r requirements.txt
 
       - name: Run script
         env:
           SHOPIFY_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           SHOPIFY_STORE_URL: ${{ secrets.STORE_URL }}
         run: python main.py
+
+      - name: Upload yesterday discounts
+        uses: actions/upload-artifact@v3
+        with:
+          name: yesterday-discounts
+          path: yesterday_discounts.json
