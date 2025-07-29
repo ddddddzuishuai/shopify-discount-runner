@@ -4,20 +4,17 @@ import os
 import random
 
 # === 配置 ===
-
-
-store_url = os.environ.get("store_url")
-access_token = os.environ.get("access_token")
-
-
-
+store_url = os.environ.get('store_url')
+access_token = os.environ.get('store_url')
 headers = {
     'Content-Type': 'application/json',
     'X-Shopify-Access-Token': access_token
 }
 
 discount_file = 'yesterday_discounts.json'
-discount_rate = 0.85  # 打 85 折
+discount_rate = 0.9  # 打 85 折
+products_num =8   # 随机打折的产品数量
+
 
 # === Step 1: 恢复昨日打折商品 ===
 if os.path.exists(discount_file):
@@ -102,7 +99,7 @@ print(f"✅ 有效产品数量：{len(all_products)}")
 
 
 # === Step 3: 随机挑选 4 个产品，下所有变体打折 ===
-selected_products = random.sample(all_products, min(6, len(all_products)))
+selected_products = random.sample(all_products, min(products_num, len(all_products)))
 new_discount_log = []
 
 for product in selected_products:
