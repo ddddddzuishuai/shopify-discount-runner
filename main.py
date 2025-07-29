@@ -4,8 +4,8 @@ import os
 import random
 
 # === 配置 ===
-store_url = os.environ.get('STORE_URL')
-access_token = os.environ.get('ACCESS_TOKEN')
+store_url = os.environ.get('SHOPIFY_STORE_URL')
+access_token = os.environ.get('SHOPIFY_ACCESS_TOKEN')
 headers = {
     'Content-Type': 'application/json',
     'X-Shopify-Access-Token': access_token
