@@ -2,36 +2,42 @@ name: Shopify Discount Scheduler
 
 on:
   schedule:
-    - cron: '0 1 * * *'  # UTC时间1点，对应北京时间上午9点
-  workflow_dispatch:     # 手动触发支持
+    - cron: '0 1 * * *'  # 每天 UTC 时间 1 点（北京时间上午 9 点）
+  workflow_dispatch:     # 支持手动触发
 
 jobs:
   run-discount-script:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Download yesterday discounts
-        uses: actions/download-artifact@v4
+      - name: Checkout repository
+        uses: actions/checkout@v3
         with:
-          name: yesterday-discounts
-          path: .
-        continue-on-error: true
+          persist-credentials: true  # 允许推送到仓库
 
-      - uses: actions/setup-python@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
           python-version: 3.x
 
-      - run: pip install -r requirements.txt
+      - name: Install dependencies
+        run: pip install -r requirements.txt
 
-      - name: Run script
+      - name: Run discount script
         env:
           SHOPIFY_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           SHOPIFY_STORE_URL: ${{ secrets.STORE_URL }}
         run: python main.py
 
-      - name: Upload yesterday discounts
-        uses: actions/upload-artifact@v4
-        with:
-          name: yesterday-discounts
-          path: yesterday_discounts.json
+      - name: Commit and push if yesterday_discounts.json changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          if [[ `git status --porcelain yesterday_discounts.json` ]]; then
+            git add yesterday_discounts.json
+            git commit -m "Update yesterday_discounts.json [skip ci]"
+            git push
+          else
+            echo "No changes to commit."
+          fi
