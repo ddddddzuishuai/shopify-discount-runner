@@ -29,12 +29,12 @@ jobs:
           SHOPIFY_STORE_URL: ${{ secrets.STORE_URL }}
         run: python main.py
 
-      - name: Commit and push if yesterday_discounts.json changed
+      - name: Commit and push changes
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-          git remote set-url origin https://x-access-token:${{ secrets.GH_PAT }}@github.com/ddddddzuishuai/shopify-discount-runner.git
-          
+          git remote set-url origin https://x-access-token:${GH_PAT}@github.com/ddddddzuishuai/shopify-discount-runner.git
+      
           if [[ $(git status --porcelain yesterday_discounts.json) ]]; then
             git add yesterday_discounts.json
             git commit -m "Update yesterday_discounts.json [skip ci]"
@@ -42,4 +42,7 @@ jobs:
           else
             echo "No changes to commit."
           fi
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+
 
