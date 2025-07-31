@@ -33,7 +33,7 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-          git remote set-url origin https://x-access-token:${{ secrets.GH_PAT }}@github.com/ddddddzuishuai/shopify-discount-runner.git
+          git remote set-url origin https://x-access-token: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@github.com/ddddddzuishuai/shopify-discount-runner.git
       
           if [[ $(git status --porcelain yesterday_discounts.json) ]]; then
             git add yesterday_discounts.json
