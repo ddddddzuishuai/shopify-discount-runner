@@ -31,8 +31,10 @@ jobs:
 
       - name: Commit and push if yesterday_discounts.json changed
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git remote set-url origin https://x-access-token:${{ secrets.GH_PAT }}@github.com/ddddddzuishuai/shopify-discount-runner.git
+
 
           if [[ $(git status --porcelain yesterday_discounts.json) ]]; then
             git add yesterday_discounts.json
