@@ -1,0 +1,43 @@
+name: Shopify Discount Scheduler
+
+on:
+  schedule:
+    - cron: '0 1 * * *'  # 每天 UTC 时间 1 点（北京时间上午 9 点）
+  workflow_dispatch:     # 支持手动触发
+
+jobs:
+  run-discount-script:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: true  # 允许推送到仓库
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.x
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run discount script
+        env:
+          SHOPIFY_ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          SHOPIFY_STORE_URL: ${{ secrets.STORE_URL }}
+        run: python main.py
+
+      - name: Commit and push if yesterday_discounts.json changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          if [[ git status --porcelain yesterday_discounts.json ]]; then
+            git add yesterday_discounts.json
+            git commit -m "Update yesterday_discounts.json [skip ci]"
+            git push
+          else
+            echo "No changes to commit."
+          fi
