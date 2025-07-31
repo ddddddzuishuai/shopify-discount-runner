@@ -34,7 +34,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          if [[ git status --porcelain yesterday_discounts.json ]]; then
+          if [[ $(git status --porcelain yesterday_discounts.json) ]]; then
             git add yesterday_discounts.json
             git commit -m "Update yesterday_discounts.json [skip ci]"
             git push
