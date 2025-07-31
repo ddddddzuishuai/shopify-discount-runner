@@ -13,7 +13,7 @@ headers = {
 
 discount_file = 'yesterday_discounts.json'
 discount_rate = 0.9  # 打 85 折
-products_num =8   # 随机打折的产品数量
+products_num =1   # 随机打折的产品数量
 
 
 # === Step 1: 恢复昨日打折商品 ===
